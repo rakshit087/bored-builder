@@ -1,6 +1,6 @@
 class Traveller {
   constructor(width, height) {
-    this.velocity = createVector(random(-1, 1)*4, random(-1, 1)*4);
+    this.velocity = p5.Vector.random2D().mult(random(2,5));
     this.position = createVector(width / 2, height / 2);
   }
   update() {
