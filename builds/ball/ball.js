@@ -1,8 +1,15 @@
+class World {
+  constructor(gravity) {
+    this.gravity = createVector(0,gravity);
+  }
+}
+
 class Ball {
-  constructor(x, y, mass) {
+  constructor(x, y, mass, world) {
     this.mass = mass;
+    this.weight = p5.Vector.mult(world.gravity, this.mass);
     this.radius = 15;
-    this.velocity = createVector(1, 0);
+    this.velocity = createVector(0, 0);
     this.acceleration = createVector(0, 0);
     this.position = createVector(x, y);
   }
@@ -34,13 +41,17 @@ class Ball {
 
 function setup() {
   createCanvas(400, 400);
-  t = new Ball(200, 0, 1000);
+  world = new World(0.01);
+  t1 = new Ball(100, 0, 100, world);
+  t2 = new Ball(300, 0, 1000, world);
 }
 
 function draw() {
   background(0);
-  const gravity = createVector(0,10);
-  t.applyForce(gravity);
-  t.update();
-  t.show();
+  t1.applyForce(t1.weight);
+  t1.update();
+  t1.show();
+  t2.applyForce(t2.weight);
+  t2.update();
+  t2.show();
 }
