@@ -43,8 +43,8 @@ class Ball {
   applyFriction() {
     if (this.position.y + this.radius >= height) {
       const dir = this.velocity.x < 0 ? 1 : -1;
-      const friction = createVector(dir * friction * this.mass, 0);
-      this.applyForce(friction);
+      const frictionForce = createVector(dir * friction * this.mass, 0);
+      this.applyForce(frictionForce);
     }
   }
 
