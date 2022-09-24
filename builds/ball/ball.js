@@ -57,19 +57,19 @@ function setup() {
   createCanvas(400, 400);
   world = new World(0.2, 0.05);
   t1 = new Ball(100, 0, 1, world);
-  t2 = new Ball(300, 0, 5, world);
+  //t2 = new Ball(300, 0, 5, world);
 }
 
 function draw() {
   background(0);
   t1.applyForce(t1.weight);
-  t2.applyForce(t2.weight);
+  //t2.applyForce(t2.weight);
   if (mouseIsPressed) {
     t1.applyForce(world.wind);
-    t2.applyForce(world.wind);
+    //t2.applyForce(world.wind);
   }
   t1.update();
   t1.show();
-  t2.update();
-  t2.show();
+  //t2.update();
+  //t2.show();
 }
