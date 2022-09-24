@@ -1,6 +1,6 @@
 const gravity = 0.1;
 const friction = 0.01;
-const wind = 0.01;
+const wind = 0.02;
 
 class Ball {
   constructor(x, y, mass) {
@@ -12,13 +12,16 @@ class Ball {
   }
 
   applyConstrains() {
-    if (
-      this.position.x > width - this.radius ||
-      this.position.x < this.radius
-    ) {
+    if (this.position.x >= width - this.radius) {
+      this.position.x = width - this.radius;
       this.velocity.x *= -1;
     }
-    if (this.position.y > height - this.radius) {
+    if (this.position.x <= this.radius) {
+      this.position.x = this.radius;
+      this.velocity.x *= -1;
+    }
+    if (this.position.y >= height - this.radius) {
+      this.position.y = height - this.radius;
       this.velocity.y *= -1;
     }
   }
@@ -35,7 +38,8 @@ class Ball {
 
   applyWind() {
     if (mouseIsPressed) {
-      const windForce = createVector(wind * this.mass, 0);
+      const dir = mouseX < this.position.x ? 1 : -1;
+      const windForce = createVector(dir * wind * this.mass, 0);
       this.applyForce(windForce);
     }
   }
