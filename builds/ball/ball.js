@@ -1,48 +1,57 @@
-class World {
-  constructor(gravity, wind) {
-    this.gravity = createVector(0, gravity);
-    this.wind = createVector(wind, 0);
-  }
-}
+const gravity = 0.1;
+const friction = 0.01;
+const wind = 0.01;
 
 class Ball {
-  constructor(x, y, mass, world) {
+  constructor(x, y, mass) {
     this.mass = mass;
-    this.weight = p5.Vector.mult(world.gravity, this.mass);
     this.radius = sqrt(this.mass) * 10;
     this.velocity = createVector(0, 0);
     this.acceleration = createVector(0, 0);
     this.position = createVector(x, y);
   }
-  update() {
-    // Reverse velocity if ball hits the wall
+
+  applyConstrains() {
     if (
       this.position.x > width - this.radius ||
       this.position.x < this.radius
     ) {
-      this.position.x = constrain(
-        this.position.x,
-        this.radius,
-        width - this.radius
-      );
       this.velocity.x *= -1;
     }
-    // Reverse velocity if ball hits the floor / ceiling
     if (this.position.y > height - this.radius) {
-      this.position.y = constrain(
-        this.position.y,
-        this.radius,
-        height - this.radius
-      );
       this.velocity.y *= -1;
     }
-    this.velocity.add(this.acceleration);
-    this.position.add(this.velocity);
-    this.acceleration.set(0,0);
   }
 
   applyForce(force) {
     this.acceleration.add(p5.Vector.div(force, this.mass));
+  }
+
+  applyGravity() {
+    const gravityForce = createVector(0, gravity * this.mass);
+    const weight = p5.Vector.mult(gravityForce, this.mass);
+    this.applyForce(weight);
+  }
+
+  applyWind() {
+    if (mouseIsPressed) {
+      const windForce = createVector(wind * this.mass, 0);
+      this.applyForce(windForce);
+    }
+  }
+
+  applyFriction() {
+    if (this.position.y + this.radius >= height) {
+      const dir = this.velocity.x < 0 ? 1 : -1;
+      const friction = createVector(dir * friction * this.mass, 0);
+      this.applyForce(friction);
+    }
+  }
+
+  update() {
+    this.velocity.add(this.acceleration);
+    this.position.add(this.velocity);
+    this.acceleration.set(0, 0);
   }
 
   show() {
@@ -55,21 +64,15 @@ class Ball {
 
 function setup() {
   createCanvas(400, 400);
-  world = new World(0.2, 0.05);
-  t1 = new Ball(100, 0, 1, world);
-  //t2 = new Ball(300, 0, 5, world);
+  ball = new Ball(100, 200, 2);
 }
 
 function draw() {
   background(0);
-  t1.applyForce(t1.weight);
-  //t2.applyForce(t2.weight);
-  if (mouseIsPressed) {
-    t1.applyForce(world.wind);
-    //t2.applyForce(world.wind);
-  }
-  t1.update();
-  t1.show();
-  //t2.update();
-  //t2.show();
+  ball.applyGravity();
+  ball.applyWind();
+  ball.applyFriction();
+  ball.applyConstrains();
+  ball.update();
+  ball.show();
 }
